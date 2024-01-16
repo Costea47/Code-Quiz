@@ -112,6 +112,7 @@ function handleChoiceClick(event) {
   } else {
       feedbackEl.textContent = "Wrong!";
       timePenalty += 10; // Increment penalty for a wrong answer
+      updateTimer();
   }
 
   // Move to the next question or end the quiz if there are no more questions

@@ -1,4 +1,4 @@
-var questions = [
+const questions = [
     {
         questionTitle:"What is the correct syntax for referring to an external script called 'xxx.js'?",
         answers: [
