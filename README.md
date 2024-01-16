@@ -31,9 +31,9 @@ N/A
 The following image shows the web application's appearance and functionality:
 
 
-![Application Screenshot](Assets/images/screenshot.png)
-![Application Screenshot](Assets/images/screenshot2.png)
-![Application Screenshot](Assets/images/screenshot3.png)
+![Application Screenshot](.Assets/images/screenshot.png)
+![Application Screenshot](.Assets/images/screenshot2.png)
+![Application Screenshot](.Assets/images/screenshot3.png)
 
 
 ## Deployment
