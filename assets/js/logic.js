@@ -40,15 +40,36 @@ var timeLeft = 60;
 // Declare timerInterval in a broader scope
 var timerInterval;
 
-function startQuiz() {
-    startScreen.classList.add("hide"); // Hide the start screen
-    startButton.classList.add("hide"); // Hide the start button
-    questionEl.classList.remove("hide"); // Show the question area
-    choicesEl.classList.remove("hide"); // Show the choices area
+// function startQuiz() {
+//     startScreen.classList.add("hide"); // Hide the start screen
+//     startButton.classList.add("hide"); // Hide the start button
+//     questionEl.classList.remove("hide"); // Show the question area
+//     choicesEl.classList.remove("hide"); // Show the choices area
 
+//     startTimer();
+//     showQuestion(currentQuestionIndex);
+// }
+
+// Function to hide an element
+function hideDiv(divId) {
+    var element = document.getElementById(divId);
+    element.classList.add("hide");
+}
+
+// Function to show an element
+function showDiv(divId) {
+    var element = document.getElementById(divId);
+    element.classList.remove("hide");
+}
+
+// Event listener for the "Start Quiz" button
+startButton.addEventListener("click", function () {
+    hideDiv("start-screen"); // Hide the start screen
+    showDiv("questions"); // Show the questions div
     startTimer();
     showQuestion(currentQuestionIndex);
-}
+});
+
 
 function startTimer() {
     timerInterval = setInterval(function () {
