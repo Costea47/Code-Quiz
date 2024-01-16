@@ -1,95 +1,87 @@
-// reate a code quiz that contains the following requirements:
+// Element selectors
+var startScreen = document.getElementById("start-screen");
+var startButton = document.getElementById("start");
+var questionEl = document.getElementById("question-title");
+var choicesEl = document.getElementById("choices");
+var endScreen = document.getElementById("end-screen");
+var submitButton = document.getElementById("submit");
+var feedbackEl = document.getElementById("feedback");
+var timerEl = document.getElementById("time");
+var timerText = document.getElementById("timer");
 
-// * A start button that when clicked a timer starts and the first question appears.
- 
-//   * Questions contain buttons for each answer.
-//   * 
-//   * When answer is clicked, the next question appears
-//   * 
-//   * If the answer clicked was incorrect then subtract time from the clock
-
-// * The quiz should end when all questions are answered or the timer reaches 0.
-
-//   * When the game ends, it should display their score and give the user the ability to save their initials and their score
-
-
-// pseudo coding
-
-// Create a list of questions with choices and answers
-//Write a function that creates question and answer elements
-//Loop through the questions until time runs out
-//Save the score in the web browser's memory
-//Retrieve score from storage and display on the high scores page
-//End the game when timer reach 0
-
-var startScreen = document.querySelector("#start-screen");
-var startButton = document.querySelector("#start");
-var questionEl = document.querySelector("#question-title");
-var choicesEl = document.querySelector("#choices");
-var endScreen = document.querySelector("#end-screen");
-var submitButton = document.querySelector("#submit");
-var feedbackEl = document.querySelector("#feedback");
-var timerEl = document.querySelector("#time");
-var timerText = document.querySelector(".timer");
-
-
-// Current question index
+// Global variables
 var currentQuestionIndex = 0;
-// timer 
-var timeLeft = 60; 
-// Declare timerInterval in a broader scope
+var timeLeft = 60;
 var timerInterval;
+var startTime;
+var scoreObj = {
+    time: '',
+    initials: ''
+};
+var timePenalty = 0;
 
-// function startQuiz() {
-//     startScreen.classList.add("hide"); // Hide the start screen
-//     startButton.classList.add("hide"); // Hide the start button
-//     questionEl.classList.remove("hide"); // Show the question area
-//     choicesEl.classList.remove("hide"); // Show the choices area
 
-//     startTimer();
-//     showQuestion(currentQuestionIndex);
-// }
+// This variable should be incremented each time the user selects a correct answer.
+var correctAnswersCount = 0;
 
-// Function to hide an element
+function calculateScore() {
+  // Calculate the final score based on the remaining time (timeLeft)
+  return Math.max(timeLeft - timePenalty, 0);
+}
+
+
+
+// Start quiz function
+function startQuiz() {
+    hideDiv("start-screen");
+    showDiv("questions");
+    startTimer();
+    showQuestion(currentQuestionIndex);
+}
+
+// Timer functions
+function startTimer() {
+  startTime = Date.now();
+  timerInterval = setInterval(function () {
+    updateTimer();
+  }, 1000);
+}
+
+function updateTimer() {
+  var currentTime = Date.now();
+  var elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
+  timeLeft = Math.max(60 - elapsedSeconds - timePenalty, 0);
+  timerEl.textContent = formatTime(timeLeft);
+
+  if (timeLeft <= 0) {
+    clearInterval(timerInterval);
+    endQuiz();
+  }
+}
+
+function formatTime(seconds) {
+  var minutes = Math.floor(seconds / 60);
+  var remainingSeconds = seconds % 60;
+  return minutes.toString().padStart(2, "0") + ":" + remainingSeconds.toString().padStart(2, "0");
+}
+
+// Show/hide div functions
 function hideDiv(divId) {
     var element = document.getElementById(divId);
     element.classList.add("hide");
 }
 
-// Function to show an element
 function showDiv(divId) {
     var element = document.getElementById(divId);
     element.classList.remove("hide");
 }
 
-// Event listener for the "Start Quiz" button
-startButton.addEventListener("click", function () {
-    hideDiv("start-screen"); // Hide the start screen
-    showDiv("questions"); // Show the questions div
-    startTimer();
-    showQuestion(currentQuestionIndex);
-});
-
-
-function startTimer() {
-    timerInterval = setInterval(function () {
-        timeLeft--;
-        timerEl.textContent = timeLeft;
-
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            endQuiz();
-        }
-    }, 1000);
-}
-
+// Display question and handle answer choice
 function showQuestion(index) {
     var questionData = questions[index];
     questionEl.textContent = questionData.questionTitle;
-    // Clear previous choices
     choicesEl.innerHTML = '';
 
-    // Display new choices
     questionData.answers.forEach(function(choice) {
         var button = document.createElement("button");
         button.textContent = choice;
@@ -98,32 +90,58 @@ function showQuestion(index) {
     });
 }
 
+
 function handleChoiceClick(event) {
-    var selectedChoice = event.target.textContent;
-    var correctAnswer = questions[currentQuestionIndex].correctAnswer;
+  var selectedChoice = event.target.textContent;
+  var correctAnswer = questions[currentQuestionIndex].correctAnswer;
 
-    if (selectedChoice === correctAnswer) {
-        feedbackEl.textContent = "Correct!";
-    } else {
-        feedbackEl.textContent = "Wrong!";
-        timeLeft -= 10;
-    }
+  if (selectedChoice === correctAnswer) {
+      feedbackEl.textContent = "Correct!";
+  } else {
+      feedbackEl.textContent = "Wrong!";
+      timePenalty += 10; // Increment penalty for a wrong answer
+  }
 
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-        showQuestion(currentQuestionIndex);
-    } else {
-        endQuiz();
-    }
+  currentQuestionIndex++;
+  if (currentQuestionIndex < questions.length) {
+      showQuestion(currentQuestionIndex);
+  } else {
+      endQuiz();
+  }
 }
 
+
+// End quiz function
 function endQuiz() {
-    clearInterval(timerInterval);
-    questionEl.classList.add("hide");
-    choicesEl.classList.add("hide");
-    endScreen.classList.remove("hide");
-    timerText.textContent = "Quiz Over!";
+  // Stop the timer
+  clearInterval(timerInterval);
+
+  // Calculate the final score using the calculateScore() function
+  var finalScore = calculateScore();
+  scoreObj.time = formatTime(finalScore);
+  // Display the final score with the remaining time
+  var finalScoreEl = document.getElementById("final-score");
+  finalScoreEl.textContent = formatTime(finalScore);
+
+  // Hide the questions and show the end screen
+  hideDiv("questions");
+  showDiv("end-screen");
 }
 
-startButton.addEventListener('click', startQuiz);
 
+function submitScore() {
+  var userInitials = document.getElementById("initials").value;
+  scoreObj.initials = userInitials;
+
+  // Here, ensure scoreObj.time already has the final score set in endQuiz()
+  var scores = JSON.parse(localStorage.getItem("scores")) || [];
+  scores.push(scoreObj);
+  localStorage.setItem("scores", JSON.stringify(scores));
+
+
+}
+
+
+// Event listeners
+startButton.addEventListener("click", startQuiz);
+submitButton.addEventListener("click", submitScore);
