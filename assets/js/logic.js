@@ -21,3 +21,19 @@
 //Save the score in the web browser's memory
 //Retrieve score from storage and display on the high scores page
 //End the game when timer reach 0
+
+var startScreen = document.querySelector("#start-screen");
+var startButton = document.querySelector("#start");
+var question = document.querySelector("#question-title");
+var choices = document.querySelector("#choices");
+var endScreen = document.querySelector("#end-screen");
+var submit = document.querySelector("#submit");
+var feedback = document.querySelector("#feedback")
+
+console.log(startScreen);
+console.log(startButton);
+console.log(question);
+console.log(choices);
+console.log(endScreen);
+console.log(submit);
+console.log(feedback);
