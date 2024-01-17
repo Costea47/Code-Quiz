@@ -11,7 +11,7 @@ var timerText = document.getElementById("timer");
 
 // Global variables to track the state of the quiz
 var currentQuestionIndex = 0; // Index of the current question in the quiz
-var timeLeft = 60; // Time left for the quiz in seconds
+var timeLeft = 80; // Time left for the quiz in seconds
 var timerInterval; // Reference for the timer interval to clear it later
 var startTime; // Timestamp when the quiz starts
 var scoreObj = {
@@ -55,7 +55,7 @@ function updateTimer() {
     // Calculate elapsed time and update timeLeft
   var currentTime = Date.now();
   var elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
-  timeLeft = Math.max(60 - elapsedSeconds - timePenalty, 0);
+  timeLeft = Math.max(80 - elapsedSeconds - timePenalty, 0);
   // Update the timer element with the formatted time
   timerEl.textContent = formatTime(timeLeft);
 
